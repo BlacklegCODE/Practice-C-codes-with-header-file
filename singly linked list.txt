@@ -1,0 +1,115 @@
+//singly linked list
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a node
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert node at the end
+void insertEnd(struct Node** head, int data) {
+    struct Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    struct Node* temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+    temp->next = newNode;
+}
+
+// Delete a node by value
+void deleteNode(struct Node** head, int value) {
+    struct Node* temp = *head;
+    struct Node* prev = NULL;
+
+    // If the head node holds the value
+    if (temp != NULL && temp->data == value) {
+        *head = temp->next;
+        free(temp);
+        return;
+    }
+
+    // Find the node to be deleted
+    while (temp != NULL && temp->data != value) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    // If not found, return
+    if (temp == NULL) return;
+
+    // Unlink the node from the list
+    prev->next = temp->next;
+    free(temp);
+}
+
+// Reverse the list
+void reverseList(struct Node** head) {
+    struct Node *prev = NULL, *current = *head, *next = NULL;
+
+    while (current != NULL) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    *head = prev;
+}
+
+// Display the list
+void display(struct Node* head) {
+    struct Node* temp = head;
+    printf("Singly Linked List: ");
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    struct Node* head = NULL;
+    int n, value, choice;
+
+    // Accepting number of nodes from user
+    printf("Enter number of nodes: ");
+    scanf("%d", &n);
+
+    // Accepting values for the nodes
+    for (int i = 0; i < n; i++) {
+        printf("Enter value for node %d: ", i + 1);
+        scanf("%d", &value);
+        insertEnd(&head, value);
+    }
+
+    display(head);
+
+    // Simple menu for operations
+    printf("1. Delete a node\n2. Reverse the list\nEnter choice: ");
+    scanf("%d", &choice);
+
+    if (choice == 1) {
+        printf("Enter value to delete: ");
+        scanf("%d", &value);
+        deleteNode(&head, value);
+        display(head);
+    } else if (choice == 2) {
+        reverseList(&head);
+        printf("Reversed list:\n");
+        display(head);
+    }
+
+    return 0;
+}
